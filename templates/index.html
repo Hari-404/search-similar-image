@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <div >
+        <form  action="{{ url_for('predict')}}" method="post">
+            
+            <label>Paste image url: </label>
+            <input required="required" type="url" id="url" name="url">
+
+            <br/><br/>
+            <label>Number of images to show: </label>
+  <input required="required" type="number" id="quantity" name="quantity" min="1" max="100">
+
+            
+            <br><br><button id="sub" type="submit ">Search Image</button>
+            <br>
+
+
+{% if filename %}
+        <table>
+            <tbody>
+            
+            {% for img_name in filename %}
+                <tr>
+                    <td><img src="{{ img_name }}"></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>{{return_code}}</p>
+    {% endif %}
+
+<!-- <img src="{{ filename }}" alt="User Image"> -->
+
+<!-- <img src="{{ url_for('display_image', filename=filename) }}" alt="User Image"> -->
+
+
+
+        </form>
+        
+    </div>
+
+</body>
+
+
+
+</html>
