@@ -15,3 +15,9 @@ pip install -r requirements.txt
 python app.py
 ```
 Open any browser and type the link provided in the terminal.
+
+![alt text](https://github.com/Hari-404/search-similar-image/blob/master/images/image1.png)
+
+![alt text](https://github.com/Hari-404/search-similar-image/blob/master/images/image2.png)
+
+![alt text](https://github.com/Hari-404/search-similar-image/blob/master/images/image3.png)
