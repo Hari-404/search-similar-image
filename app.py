@@ -5,9 +5,9 @@ import pickle
 import numpy as np
 import sklearn
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.resnet50 import ResNet50
+from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input
 from sklearn.neighbors import NearestNeighbors
-from tensorflow.keras.applications.resnet50 import preprocess_input
+from tensorflow.keras.models import load_model
 from numpy.linalg import norm
 import pickle as pk
 from PIL import Image
@@ -16,18 +16,27 @@ import os
 
 app = Flask(__name__)
 
-path = 'static/Caltech101'
 
-if not os.path.isdir(path) :
-	os.system("wget https://ndownloader.figshare.com/files/12855005")
-	os.system('mv 12855005 files.rar')
-	os.system('unrar x files.rar')
-	os.system('rm files.rar')
-	os.system('mkdir static')
-	os.system('mv Caltech101')
-	os.system('mv Caltech101 static')
 
-model = ResNet50(include_top=False, input_shape=(224, 224, 3), pooling='max')
+# If you have Caltech data set uncomment below code
+
+# path = 'static/Caltech101'
+# if not os.path.isdir(path) :
+# 	os.system("wget https://ndownloader.figshare.com/files/12855005")
+# 	os.system('mv 12855005 files.rar')
+# 	os.system('unrar x files.rar')
+# 	os.system('rm files.rar')
+# 	os.system('mkdir static')
+# 	os.system('mv Caltech101')
+# 	os.system('mv Caltech101 static')
+
+
+# If you don't have resnet weights comment below line
+model = load_model('resnet.h5')
+
+# If you don't have resnet weights uncomment below line
+# model = ResNet50(include_top=False, input_shape=(224, 224, 3), pooling='max')
+
 
 filenames = pk.load(open('caltech101-filenames.pickle', 'rb'))
 features = pk.load(open('caltech101-resnet50-features.pickle', 'rb'))
@@ -46,13 +55,14 @@ def extract_features_numpy(img):
 def Home():
     return render_template('index.html')
 
-@app.route("/predict", methods=['POST'])
-def predict():
+@app.route("/search", methods=['POST'])
+def search():
 	if request.method == 'POST':
-		image_url = request.form['url']
+		# image = request.form['image'] # To load image with url
+		image = request.files['image']
 		no_of_img = int(request.form['quantity'])
 		try:
-			img = imageio.imread(image_url)
+			img = imageio.imread(image)
 			l = []
 			img = cv2.resize(img, dsize=(224, 224), interpolation=cv2.INTER_CUBIC)
 			img = np.asarray(img)
@@ -64,7 +74,7 @@ def predict():
 		
 			return render_template('index.html', filename=l)
 		except :
-					return render_template('index.html', return_code="Failed to download image")
+					return render_template('index.html', return_code="Failed to process image")
 
 @app.route('/Caltech101/<filename>')
 def display_image(filename):
